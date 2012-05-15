@@ -83,7 +83,7 @@ typedef struct {
 	// It may be 200, 404 etc
 	int status;
 
-	char *method, *url, *proto, *host, *path, *content_encoding, *content_type, *user_agent, *x_ziproxy_flags;
+	char *method, *url, *proto, *host, *path, *content_encoding, *content_type, *user_agent, *x_ziproxy_flags, *custom_log_header;
 	int flags, content_encoding_flags;
 	t_content_type type;
 	ZP_DATASIZE_TYPE content_length;

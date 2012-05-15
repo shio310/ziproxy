@@ -75,6 +75,7 @@ static pid_t debuglog_pid;
 static int accesslog_active = 0;
 static FILE *accesslog_file = NULL;
 static struct timeval accesslog_giventime;
+static char *accesslog_custom_log_header = NULL;
 static char *accesslog_client_addr = NULL;
 static char *accesslog_username = NULL;
 static char *accesslog_method = NULL;
@@ -223,6 +224,7 @@ void access_log_reset (void)
 	if (accesslog_active == 0)
 		return;
 
+	access_log_define_custom_log_header (NULL);
 	access_log_define_client_adrr (NULL);
 	access_log_define_username (NULL);
 	access_log_define_method (NULL);
@@ -245,6 +247,14 @@ static void access_log_redefine_str_var (const char *given_str, char **given_var
 		*given_var = strdup (given_str);
 	else
 		*given_var = NULL;
+}
+
+void access_log_define_custom_log_header (const char *custom_log_header)
+{
+	if (accesslog_active == 0)
+		return;
+
+	access_log_redefine_str_var (custom_log_header, &accesslog_custom_log_header);
 }
 
 void access_log_define_client_adrr (const char *client_addr)
@@ -351,20 +361,24 @@ void access_log_dump_entry (void)
 	snprintf (client_source, 255, "%s%s%s", has_username?accesslog_username:"", has_username?"@":"", has_client_addr?accesslog_client_addr:"?");
 
     const char *format;
-    const char *log_header;
-    if (CustomLogHeader != NULL) {
+    const char *custom_log_header;
+    if (CustomLogHeader == NULL) {
+        format = "%"ZP_TIMEVAL_STR".%03"ZP_TIMEVAL_STR" %6"ZP_TIMEVAL_STR" %15s %2s %6"ZP_DATASIZE_STR" %6"ZP_DATASIZE_STR" %s%s %s\n";
+        custom_log_header = NULL;
+    } else {        
         format = "%"ZP_TIMEVAL_STR".%03"ZP_TIMEVAL_STR" %6"ZP_TIMEVAL_STR" %15s %2s %6"ZP_DATASIZE_STR" %6"ZP_DATASIZE_STR" %s %s %s\n";
-    } else {
-        format = "%"ZP_TIMEVAL_STR".%03"ZP_TIMEVAL_STR" %6"ZP_TIMEVAL_STR" %15s %2s %6"ZP_DATASIZE_STR" %6"ZP_DATASIZE_STR"%s%s %s\n";
+        if (accesslog_custom_log_header == NULL || *accesslog_custom_log_header == 0) {
+            custom_log_header = "-";
+        } else {
+            custom_log_header = accesslog_custom_log_header;
+        }
     }
-    
 	fprintf (accesslog_file,
              format,
-		"%"ZP_TIMEVAL_STR".%03"ZP_TIMEVAL_STR" %6"ZP_TIMEVAL_STR" %15s %2s %6"ZP_DATASIZE_STR" %6"ZP_DATASIZE_STR" %s %s\n",
 		(ZP_TIMEVAL_TYPE) currtime.tv_sec,
 		(ZP_TIMEVAL_TYPE) currtime.tv_usec / 1000,
 		(ZP_TIMEVAL_TYPE) time_spent_msec, client_source, flags_str, accesslog_inlen, accesslog_outlen,
-        (CustomLogHeader == NULL ? "" : CustomLogHeader),
+        (custom_log_header == NULL ? "" : custom_log_header),
 		has_method?accesslog_method:"?",
 		has_url?accesslog_url:"?");
 }

@@ -145,6 +145,7 @@ int ziproxy (const char *client_addr, struct sockaddr_in *socket_host, SOCKET so
 	/* at this point, we've got both HTTP method and URL */
 	access_log_define_method (hdrs->method);
 	access_log_define_url (hdrs->url);
+	access_log_define_custom_log_header (hdrs->custom_log_header);
 
 	/* catch signals indicating crash,
 	   but only after this point since:

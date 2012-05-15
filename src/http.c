@@ -793,7 +793,7 @@ http_headers *new_headers(void){
 
 	h->port = -1;
 
-	h->user_agent = h->content_encoding = h->method = h->url = h->path = h->host = h->proto = NULL;
+	h->user_agent = h->content_encoding = h->method = h->url = h->path = h->host = h->proto = h->x_ziproxy_flags = h->custom_log_header = NULL;
 	
 	return h;
 }
@@ -1048,6 +1048,20 @@ void get_client_headers(http_headers * hdr){
 			}
 		}
 
+        if (CustomLogHeader != NULL) {
+            const size_t CustomLogHeader_len = strlen(CustomLogHeader);
+            if (strncasecmp(line, CustomLogHeader, CustomLogHeader_len) == 0 &&
+                line[CustomLogHeader_len] == ':') {
+                char *custom_log_header;
+                
+                custom_log_header = line + CustomLogHeader_len + 1;
+                if (*custom_log_header == ' ') {
+                    custom_log_header++;
+                }
+                hdr->custom_log_header = strdup(custom_log_header);
+            }
+        }
+        
 		if (strncasecmp (line, "X-Ziproxy-Flags:", 16) == 0) {
 			char *provided_ziproxy_flags;
 			
