@@ -86,7 +86,8 @@ AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 
 dnl Those are all the mandatory headers in *.c and *.h files
-AC_CHECK_HEADERS(arpa/inet.h arpa/nameser.h assert.h errno.h fcntl.h getopt.h gif_lib.h grp.h jpeglib.h math.h netdb.h netinet/in.h png.h pthread.h pwd.h resolv.h signal.h stdarg.h stdio.h stdlib.h string.h syslog.h sys/select.h sys/socket.h sys/stat.h sys/time.h sys/types.h sys/wait.h time.h unistd.h zlib.h,,AC_MSG_FAILURE([required header absent]))
+AC_CHECK_HEADERS(arpa/inet.h arpa/nameser.h assert.h errno.h fcntl.h getopt.h gif_lib.h grp.h jpeglib.h math.h netdb.h netinet/in.h png.h pthread.h pwd.h  signal.h stdarg.h stdio.h stdlib.h string.h syslog.h sys/select.h sys/socket.h sys/stat.h sys/time.h sys/types.h sys/wait.h time.h unistd.h zlib.h,,AC_MSG_FAILURE([required header absent]))
+AC_CHECK_HEADERS(resolv.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
