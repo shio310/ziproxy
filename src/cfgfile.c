@@ -126,6 +126,8 @@ char *cli_RunAsUser;
 char *RunAsGroup;
 char *cli_RunAsGroup;
 
+char *CustomLogHeader;
+
 int AuthMode;
 char *AuthPasswdFile;
 #ifdef SASL
@@ -401,6 +403,7 @@ int ReadCfgFile(char * cfg_file)
 	qp_getconf_str (conf_handler, "PIDFile", &PIDFile, QP_FLAG_NONE);
 	qp_getconf_str (conf_handler, "RunAsUser", &RunAsUser, QP_FLAG_NONE);
 	qp_getconf_str (conf_handler, "RunAsGroup", &RunAsGroup, QP_FLAG_NONE);
+	qp_getconf_str (conf_handler, "CustomLogHeader", &CustomLogHeader, QP_FLAG_NONE);
 	qp_getconf_int (conf_handler, "AuthMode", &AuthMode, QP_FLAG_NONE);
 	qp_getconf_str (conf_handler, "AuthPasswdFile", &AuthPasswdFile, QP_FLAG_NONE);
 #ifdef SASL
@@ -725,9 +728,10 @@ int ReadCfgFile(char * cfg_file)
 
 			/* migrate data from deprecated "Compressible" array to new one */
 			for (i = 0; i < n; i++) {
-				char full_content_type [strlen (Compressible [i]) + 12 + 1];
+                size_t sizeof_full_content_type = strlen (Compressible [i]) + 12 + 1;
+				char full_content_type [sizeof_full_content_type];
 
-				sprintf (full_content_type, "application/%s", Compressible [i]);
+				snprintf (full_content_type, sizeof_full_content_type, "application/%s", Compressible [i]);
 				ct_insert (tmp_lossless_compress_ct, full_content_type);
 			}
 

@@ -562,7 +562,7 @@ void replace_data_and_send (http_headers *serv_hdr)
 	char content_len_str [200];
 
 	/* change headers according to the new data */
-	sprintf (content_len_str, "Content-Length: %d", embbin_empty_image_size);
+	snprintf (content_len_str, sizeof content_len_str, "Content-Length: %d", embbin_empty_image_size);
 	replace_header_str (serv_hdr, "Content-Length", content_len_str);
 	replace_header_str (serv_hdr, "Content-Type", "Content-type: image/gif");
 	remove_header_str (serv_hdr, "Content-Encoding");
@@ -1659,8 +1659,9 @@ void fix_request_url (http_headers *hdr) {
 	if (*(hdr->host) == '\0')
 		send_error (400, "Bad Request", NULL, "Malformed request or non-HTTP/1.1 compliant.");
 
-	new_url = malloc (strlen (hdr->url) + strlen (hdr->host) + 7 + 1);
-	sprintf (new_url, "http://%s%s", hdr->host, hdr->url);
+    size_t sizeof_new_url = strlen (hdr->url) + strlen (hdr->host) + 7 + 1;
+	new_url = malloc (sizeof_new_url);
+	snprintf (new_url, sizeof_new_url, "http://%s%s", hdr->host, hdr->url);
 	hdr->url = new_url;
 
 	if (NextProxy != NULL) hdr->path = hdr->url;

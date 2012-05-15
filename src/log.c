@@ -60,6 +60,7 @@
 #include <sys/time.h>
 #include "log.h"
 #include "globaldefs.h"
+#include "cfgfile.h"
 #include <sys/types.h>
 #include <unistd.h>
 #include <string.h>

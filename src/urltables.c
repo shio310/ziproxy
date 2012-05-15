@@ -67,7 +67,7 @@ char *ut_aux_build_url (const char *host, const char *path)
 	if ((newstr = calloc (buflen, sizeof (char))) == NULL)
 		return (NULL);
 
-	sprintf (newstr, "%s/%s", host, path);
+	snprintf (newstr, buflen, "%s/%s", host, path);
 	return (newstr);
 }
 
