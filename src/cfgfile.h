@@ -115,6 +115,7 @@ extern char *RunAsGroup;
 extern char *cli_RunAsGroup;
 
 extern char *CustomLogHeader;
+extern char *OriginalContentLengthHeader;
 
 extern const t_ut_urltable *tos_markasdiff_url;
 extern const t_ct_cttable *tos_maskasdiff_ct;

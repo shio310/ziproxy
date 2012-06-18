@@ -127,6 +127,7 @@ char *RunAsGroup;
 char *cli_RunAsGroup;
 
 char *CustomLogHeader;
+char *OriginalContentLengthHeader;
 
 int AuthMode;
 char *AuthPasswdFile;
@@ -404,6 +405,7 @@ int ReadCfgFile(char * cfg_file)
 	qp_getconf_str (conf_handler, "RunAsUser", &RunAsUser, QP_FLAG_NONE);
 	qp_getconf_str (conf_handler, "RunAsGroup", &RunAsGroup, QP_FLAG_NONE);
 	qp_getconf_str (conf_handler, "CustomLogHeader", &CustomLogHeader, QP_FLAG_NONE);
+	qp_getconf_str (conf_handler, "OriginalContentLengthHeader", &OriginalContentLengthHeader, QP_FLAG_NONE);
 	qp_getconf_int (conf_handler, "AuthMode", &AuthMode, QP_FLAG_NONE);
 	qp_getconf_str (conf_handler, "AuthPasswdFile", &AuthPasswdFile, QP_FLAG_NONE);
 #ifdef SASL

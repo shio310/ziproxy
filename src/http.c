@@ -517,6 +517,11 @@ void proxy_http (http_headers *client_hdr, FILE* sockrfp, FILE* sockwfp)
 	debug_log_puts ("Forwarding header and modified content.");
 	debug_log_puts ("Out Headers:");
 
+	if (OriginalContentLengthHeader != NULL && inlen != outlen) {
+		snprintf (line, sizeof(line), "%s: %"ZP_DATASIZE_STR,
+			OriginalContentLengthHeader, inlen);
+		add_header (serv_hdr, line);
+	}
 	snprintf (line, sizeof(line), "Content-Length: %"ZP_DATASIZE_STR, outlen);
 	if (serv_hdr->where_content_length > 0) {
 		serv_hdr->hdr[serv_hdr->where_content_length] = strdup (line);
