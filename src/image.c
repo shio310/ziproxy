@@ -5,7 +5,7 @@
  * This code is under the following conditions:
  *
  * ---------------------------------------------------------------------
- * Copyright (c)2005-2012 Daniel Mealha Cabrita
+ * Copyright (c)2005-2014 Daniel Mealha Cabrita
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2068,21 +2068,17 @@ int jp22bitmap(char *inbuf, int insize, raw_bitmap **out, long long int max_raw_
 
 #endif
 
-/* alpha channel optimization
-   applies to non-palette images only (RGBA, YUVA, YA)
-   returns !=0 if there was an alpha channel, it was useless
-   and it was removed.
-   returns ==0 if there's no alpha channel, or if there is
-   but it contains useful data. */
+/* alpha channel optimization (= removal under certain circumstances)
+   applies to non-palette images only (RGBA, YUVA, YA) */
 static int optimize_alpha_channel (raw_bitmap *bmp)
 {
 	unsigned char *which_bitmap;
 	unsigned char *read_bitmap;
 	unsigned char *write_bitmap;
 	int i;
-	int all_opaque = 1;
-	int totpix = bmp->width * bmp->height;
-	unsigned char alpha_mask = (unsigned char) 0xff;
+	int do_remove = 1;
+	unsigned long long int totpix = bmp->width * bmp->height;
+	unsigned long long int alpha_avg = 0;
 	int also_rgb = 1; /* true == 2 ! */
 
 	if (! ((bmp->bitmap != NULL) || (bmp->bitmap_yuv != NULL)))
@@ -2090,8 +2086,7 @@ static int optimize_alpha_channel (raw_bitmap *bmp)
 	if (! ((bmp->bpp == 2) || (bmp->bpp == 4)))
 		return 0;
 
-	/* detect whether there's waste of alpha channel
-	   (all pixels being opaque) */
+	debug_log_puts ("Image has alpha channel. Analysing...");
 
 	if (bmp->bitmap_yuv != NULL) {
 		which_bitmap = bmp->bitmap_yuv;
@@ -2107,17 +2102,27 @@ static int optimize_alpha_channel (raw_bitmap *bmp)
 	read_bitmap = which_bitmap;
 	read_bitmap += (bmp->bpp - 1);
 
+	/* determine average alpha channel value */
 	for (i = 0; i < totpix; i++) {
-		alpha_mask &= *read_bitmap;
-		read_bitmap += bmp->bpp;
+		alpha_avg += *read_bitmap;
+		read_bitmap += bmp->bpp;	
 	}
-	if (alpha_mask != (unsigned char) 0xff)
-		all_opaque = 0;
+	alpha_avg = (alpha_avg * 1000000) / (totpix * 255);
+	debug_log_printf ("Image average alpha channel opacity: %d/1000000\n", alpha_avg);
 
-	/* if waste detected, remove alpha channel */
-	if (all_opaque != 0) {
-		debug_log_puts ("Image has unnecessary alpha channel.");
+	/* report and decide what to do */
+	if (alpha_avg == 1000000) {
+		debug_log_puts ("Image has unnecessary alpha channel. Image is completely opaque.");
+	} else if (alpha_avg >= AlphaRemovalMinAvgOpacity) {
+		debug_log_puts ("Image is opaque enough to have its alpha channel removed.");
+	} else {
+		debug_log_puts ("Keeping image alpha channel.");
+		do_remove = 0;
+	}
 
+	/* remove alpha channel */
+	if (do_remove) {
+		debug_log_puts ("Removing image alpha channel...");
 		read_bitmap = write_bitmap = which_bitmap;
 
 		while (also_rgb--) {

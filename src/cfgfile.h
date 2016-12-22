@@ -5,7 +5,7 @@
  * This code is under the following conditions:
  *
  * ---------------------------------------------------------------------
- * Copyright (c)2005-2012 Daniel Mealha Cabrita
+ * Copyright (c)2005-2014 Daniel Mealha Cabrita
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,10 +70,7 @@
 extern int Port, NextPort, ConnTimeout, MaxSize, PreemptNameResMax, MaxUncompressedGzipRatio, MinUncompressedGzipStreamEval, MaxUncompressedImageRatio;
 
 extern int ImageQuality[4];
-//#define ThumbQ (ImageQ[0])
-//#define SmallQ (ImageQ[1])
-//#define MedQ (ImageQ[2])
-//#define LargeQ (ImageQ[3])
+extern int AlphaRemovalMinAvgOpacity;
 
 extern int RestrictOutPortHTTP [MAX_RESTRICTOUTPORTHTTP_LEN];
 extern int RestrictOutPortCONNECT [MAX_RESTRICTOUTPORTCONNECT_LEN];
@@ -113,9 +110,6 @@ extern char *RunAsUser;
 extern char *cli_RunAsUser;
 extern char *RunAsGroup;
 extern char *cli_RunAsGroup;
-
-extern char *CustomLogHeader;
-extern char *OriginalContentLengthHeader;
 
 extern const t_ut_urltable *tos_markasdiff_url;
 extern const t_ct_cttable *tos_maskasdiff_ct;

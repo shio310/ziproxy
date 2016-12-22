@@ -5,7 +5,7 @@
  * This code is under the following conditions:
  *
  * ---------------------------------------------------------------------
- * Copyright (c)2005-2012 Daniel Mealha Cabrita
+ * Copyright (c)2005-2014 Daniel Mealha Cabrita
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,7 +100,6 @@ char *cfg_file = DefaultCfgLocation;
 
 struct struct_command_options{
 	int daemon_mode;	/* != 0, daemon mode; == 0, [x]inetd mode)	*/
-	int foreground;	    /* != 0 foreground */
 	int stop_daemon;	/* != 0, stops running daemon; == 0, proceed normally */
 //	int cfg_specified;	/* != 0, used overrided default config file; == 0, default config file path	*/
 	struct in_addr addr_low, addr_high;
@@ -216,7 +215,6 @@ int main(int argc, char **argv, char *env[])
 
 	/* set defaults */
 	command_options.daemon_mode = 0;
-	command_options.foreground = 0;
 
 	process_command_line_arguments (argc, argv);
 
@@ -282,9 +280,6 @@ int main(int argc, char **argv, char *env[])
 	debug_log_init (DebugLog);
 	access_log_init (AccessLog);
 
-    if (command_options.foreground != 0) {
-        goto dont_daemonize;
-    }
 	/* turn it into a daemon */
 	{
 		pid_t dpid;	/* daemonize() pid, not necessarily the daemon PID */
@@ -344,7 +339,7 @@ int main(int argc, char **argv, char *env[])
 	while (daemon_process_greenlight == 0) {
 		sleep (1);	/* wait for signal or timeout, loop */
 	}
-dont_daemonize:
+
 	/* phew! we are clear to go */
 
 	signal (SIGUSR1, SIG_DFL);	/* we no longer need this */
@@ -617,7 +612,7 @@ void process_command_line_arguments (int argc, char **argv)
 	cli_RunAsGroup = NULL;
 	cli_PIDFile = NULL;
 
-	while ((option = getopt_long (argc, argv, "c:dfg:hikp:u:", long_options, &option_index)) != EOF){
+	while ((option = getopt_long (argc, argv, "c:df:g:hikp:u:", long_options, &option_index)) != EOF){
 		switch(option){
 			case 'c':
 				cfg_file = optarg;
@@ -629,7 +624,7 @@ void process_command_line_arguments (int argc, char **argv)
 				defined_mode = 1;
 				break;
 			case 'f':
-				command_options.foreground = 1;
+				option_error (3, "Obsolete option. Use \"OnlyFrom\" config option instead.\n", optarg);
 				break;
 			case 'g':
 				/* will check if group exists later */
@@ -638,7 +633,7 @@ void process_command_line_arguments (int argc, char **argv)
 				break;
 			case 'h':
 				printf ("Ziproxy " VERSION "\n"
-						"Copyright (c)2005-2012 Daniel Mealha Cabrita\n"
+						"Copyright (c)2005-2014 Daniel Mealha Cabrita\n"
 						"\n"
 
 						"This program is free software; you can redistribute it and/or modify\n"
@@ -658,7 +653,6 @@ void process_command_line_arguments (int argc, char **argv)
 						
 						"Usage: ziproxy <-d|-i|-k> [-c config_file] [-u user_name] [-g group_name] [-p pid_filename] [-h]\n\n"
 						"-d, --daemon-mode\n\tUsed when running in standalone mode.\n\n"
-						"-f, --foreground\n\tKeep in foreground when in standalone mode.\n\n"
 						"-k, --stop-daemon\n\tStops daemon.\n\n"
 						"-i, --inetd-mode\n\tUsed when running from inetd or xinetd.\n\n"
 						"-c <config_file>, --config-file=<config_file>\n\tFull path to ziproxy.conf file (instead of default one).\n\n"

@@ -5,7 +5,7 @@
 # chkconfig: - 86 14
 # description: Ziproxy
 
-# Copyright (c)2005-2012 Daniel Mealha Cabrita
+# Copyright (c)2005-2014 Daniel Mealha Cabrita
 
 PROGNAME="Ziproxy"
 

@@ -5,7 +5,7 @@
  * This code is under the following conditions:
  *
  * ---------------------------------------------------------------------
- * Copyright (c)2005-2012 Daniel Mealha Cabrita
+ * Copyright (c)2005-2014 Daniel Mealha Cabrita
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -97,7 +97,6 @@ extern void debug_log_set_pid_current (void);
 
 extern int access_log_init (const char *accesslog_filename);
 extern void access_log_reset (void);
-extern void access_log_define_custom_log_header (const char *accesslog_custom_log_header);
 extern void access_log_define_client_adrr (const char *client_addr);
 extern void access_log_define_username (const char *username);
 extern void access_log_define_method (const char *method);

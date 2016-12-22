@@ -5,7 +5,7 @@
  * This code is under the following conditions:
  *
  * ---------------------------------------------------------------------
- * Copyright (c)2005-2012 Daniel Mealha Cabrita
+ * Copyright (c)2005-2014 Daniel Mealha Cabrita
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,7 +67,7 @@ char *ut_aux_build_url (const char *host, const char *path)
 	if ((newstr = calloc (buflen, sizeof (char))) == NULL)
 		return (NULL);
 
-	snprintf (newstr, buflen, "%s/%s", host, path);
+	sprintf (newstr, "%s/%s", host, path);
 	return (newstr);
 }
 

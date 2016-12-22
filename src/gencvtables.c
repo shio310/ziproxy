@@ -6,7 +6,7 @@
  * This code is under the following conditions:
  *
  * ---------------------------------------------------------------------
- * Copyright (c)2005-2012 Daniel Mealha Cabrita
+ * Copyright (c)2005-2014 Daniel Mealha Cabrita
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -96,7 +96,7 @@ main ()
 		" * This code is under the following conditions:\n"
 		" *\n"
 		" * ---------------------------------------------------------------------\n"
-		" * Copyright (c)2005-2012 Daniel Mealha Cabrita\n"
+		" * Copyright (c)2005-2014 Daniel Mealha Cabrita\n"
 		" *\n"
 		" * This program is free software; you can redistribute it and/or modify\n"
 		" * it under the terms of the GNU General Public License as published by\n"

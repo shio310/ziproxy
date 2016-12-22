@@ -5,7 +5,7 @@
  * This code is under the following conditions:
  *
  * ---------------------------------------------------------------------
- * Copyright (c)2007-2012 Daniel Mealha Cabrita
+ * Copyright (c)2007-2014 Daniel Mealha Cabrita
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,17 +23,10 @@
  * ---------------------------------------------------------------------
  */
 
+#include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include "txtfiletools.h"
-
-/* FIXME: _GNU_SOURCE has no effect at this point
- * let's just build strndup() for all OSes to be safe */
-// #ifdef __GLIBC__
-// #define _GNU_SOURCE
-// #else
-#define QP_BUILD_STRNDUP
-// #endif
 
 #include <string.h>
 #include "qparser.h"
@@ -54,7 +47,7 @@ enum enum_qp_datatype {QP_DATATYPE_STRING,
 
 static t_qp_initflags qp_globalflags;
 
-#ifdef QP_BUILD_STRNDUP
+#ifndef HAVE_STRNDUP
 char *strndup(const char *s, size_t n)
 {
 	char *newstr = NULL;

@@ -5,7 +5,7 @@
  * This code is under the following conditions:
  *
  * ---------------------------------------------------------------------
- * Copyright (c)2005-2012 Daniel Mealha Cabrita
+ * Copyright (c)2005-2014 Daniel Mealha Cabrita
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -517,11 +517,6 @@ void proxy_http (http_headers *client_hdr, FILE* sockrfp, FILE* sockwfp)
 	debug_log_puts ("Forwarding header and modified content.");
 	debug_log_puts ("Out Headers:");
 
-	if (OriginalContentLengthHeader != NULL && inlen != outlen) {
-		snprintf (line, sizeof(line), "%s: %"ZP_DATASIZE_STR,
-			OriginalContentLengthHeader, inlen);
-		add_header (serv_hdr, line);
-	}
 	snprintf (line, sizeof(line), "Content-Length: %"ZP_DATASIZE_STR, outlen);
 	if (serv_hdr->where_content_length > 0) {
 		serv_hdr->hdr[serv_hdr->where_content_length] = strdup (line);
@@ -567,7 +562,7 @@ void replace_data_and_send (http_headers *serv_hdr)
 	char content_len_str [200];
 
 	/* change headers according to the new data */
-	snprintf (content_len_str, sizeof content_len_str, "Content-Length: %d", embbin_empty_image_size);
+	sprintf (content_len_str, "Content-Length: %d", embbin_empty_image_size);
 	replace_header_str (serv_hdr, "Content-Length", content_len_str);
 	replace_header_str (serv_hdr, "Content-Type", "Content-type: image/gif");
 	remove_header_str (serv_hdr, "Content-Encoding");
@@ -798,7 +793,7 @@ http_headers *new_headers(void){
 
 	h->port = -1;
 
-	h->user_agent = h->content_encoding = h->method = h->url = h->path = h->host = h->proto = h->x_ziproxy_flags = h->custom_log_header = NULL;
+	h->user_agent = h->content_encoding = h->method = h->url = h->path = h->host = h->proto = NULL;
 	
 	return h;
 }
@@ -1053,20 +1048,6 @@ void get_client_headers(http_headers * hdr){
 			}
 		}
 
-        if (CustomLogHeader != NULL) {
-            const size_t CustomLogHeader_len = strlen(CustomLogHeader);
-            if (strncasecmp(line, CustomLogHeader, CustomLogHeader_len) == 0 &&
-                line[CustomLogHeader_len] == ':') {
-                char *custom_log_header;
-                
-                custom_log_header = line + CustomLogHeader_len + 1;
-                if (*custom_log_header == ' ') {
-                    custom_log_header++;
-                }
-                hdr->custom_log_header = strdup(custom_log_header);
-            }
-        }
-        
 		if (strncasecmp (line, "X-Ziproxy-Flags:", 16) == 0) {
 			char *provided_ziproxy_flags;
 			
@@ -1678,9 +1659,8 @@ void fix_request_url (http_headers *hdr) {
 	if (*(hdr->host) == '\0')
 		send_error (400, "Bad Request", NULL, "Malformed request or non-HTTP/1.1 compliant.");
 
-    size_t sizeof_new_url = strlen (hdr->url) + strlen (hdr->host) + 7 + 1;
-	new_url = malloc (sizeof_new_url);
-	snprintf (new_url, sizeof_new_url, "http://%s%s", hdr->host, hdr->url);
+	new_url = malloc (strlen (hdr->url) + strlen (hdr->host) + 7 + 1);
+	sprintf (new_url, "http://%s%s", hdr->host, hdr->url);
 	hdr->url = new_url;
 
 	if (NextProxy != NULL) hdr->path = hdr->url;

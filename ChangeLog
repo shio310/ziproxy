@@ -1,3 +1,15 @@
+3.12.2014 Daniel Mealha Cabrita
+	version 3.3.1
+	qparser.c configure.in:
+		Fixed strndup-related compiling problems.
+
+6.1.2013 Daniel Mealha Cabrita
+	version 3.3.0
+	image.c cfgfile.*:
+		Added option to remove alpha channel after
+		a specified average opacity threshold.
+		New option: AlphaRemovalMinAvgOpacity
+
 8.2.2012 Daniel Mealha Cabrita
 	version 3.2.1
 	image.c:

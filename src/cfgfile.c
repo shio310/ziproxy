@@ -5,7 +5,7 @@
  * This code is under the following conditions:
  *
  * ---------------------------------------------------------------------
- * Copyright (c)2005-2012 Daniel Mealha Cabrita
+ * Copyright (c)2005-2014 Daniel Mealha Cabrita
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,6 +84,7 @@ t_qp_bool DoGzip, UseContentLength, AllowLookCh, ProcessJPG, ProcessPNG, Process
 int Port, NextPort, ConnTimeout, MaxSize, PreemptNameResMax, MaxUncompressedGzipRatio, MinUncompressedGzipStreamEval, MaxUncompressedImageRatio;
 int ZiproxyTimeout; // deprecated
 int ImageQuality[4];
+int AlphaRemovalMinAvgOpacity;
 int JP2ImageQuality[4];
 int RestrictOutPortHTTP [MAX_RESTRICTOUTPORTHTTP_LEN];
 int RestrictOutPortCONNECT [MAX_RESTRICTOUTPORTCONNECT_LEN];
@@ -125,9 +126,6 @@ char *RunAsUser;
 char *cli_RunAsUser;
 char *RunAsGroup;
 char *cli_RunAsGroup;
-
-char *CustomLogHeader;
-char *OriginalContentLengthHeader;
 
 int AuthMode;
 char *AuthPasswdFile;
@@ -247,7 +245,7 @@ int ReadCfgFile(char * cfg_file)
 	
 #endif
 	const int DefaultImageQuality[] = { 30, 25, 25, 20 };
-	
+
 	Port = NextPort = 8080;
 	ConnTimeout = 90;
 	MaxSize = 1048576;
@@ -306,6 +304,7 @@ int ReadCfgFile(char * cfg_file)
 	RunAsGroup = cli_RunAsGroup;	/* defaults to CLI parameter, if specified */
 	AuthMode = AUTH_NONE;
 	AuthPasswdFile = NULL;
+	AlphaRemovalMinAvgOpacity = 1000000;
 #ifdef SASL
 	AuthSASLConfPath = NULL;
 #endif
@@ -342,6 +341,7 @@ int ReadCfgFile(char * cfg_file)
 	qp_getconf_int (conf_handler, "MaxSize", &MaxSize, QP_FLAG_NONE);
 	qp_getconf_bool (conf_handler, "UseContentLength", &UseContentLength, QP_FLAG_NONE);
 	qp_getconf_array_int (conf_handler, "ImageQuality", 0, NULL, QP_FLAG_NONE);
+	qp_getconf_int (conf_handler, "AlphaRemovalMinAvgOpacity", &AlphaRemovalMinAvgOpacity, QP_FLAG_NONE);
 	qp_getconf_array_int (conf_handler, "JP2ImageQuality", 0, NULL, QP_FLAG_NONE);
 	qp_getconf_bool (conf_handler, "AllowLookChange", &AllowLookCh, QP_FLAG_NONE);
 	qp_getconf_bool (conf_handler, "ConvertToGrayscale", &ConvertToGrayscale, QP_FLAG_NONE);
@@ -404,8 +404,6 @@ int ReadCfgFile(char * cfg_file)
 	qp_getconf_str (conf_handler, "PIDFile", &PIDFile, QP_FLAG_NONE);
 	qp_getconf_str (conf_handler, "RunAsUser", &RunAsUser, QP_FLAG_NONE);
 	qp_getconf_str (conf_handler, "RunAsGroup", &RunAsGroup, QP_FLAG_NONE);
-	qp_getconf_str (conf_handler, "CustomLogHeader", &CustomLogHeader, QP_FLAG_NONE);
-	qp_getconf_str (conf_handler, "OriginalContentLengthHeader", &OriginalContentLengthHeader, QP_FLAG_NONE);
 	qp_getconf_int (conf_handler, "AuthMode", &AuthMode, QP_FLAG_NONE);
 	qp_getconf_str (conf_handler, "AuthPasswdFile", &AuthPasswdFile, QP_FLAG_NONE);
 #ifdef SASL
@@ -626,6 +624,9 @@ int ReadCfgFile(char * cfg_file)
 	if (check_int_minimum ("MaxActiveUserConnections", MaxActiveUserConnections, 0))
 		return (1);
 
+	if (check_int_ranges ("AlphaRemovalMinAvgOpacity", AlphaRemovalMinAvgOpacity, 0, 1000000))
+		return (1);
+
 	n = qp_get_array_size (conf_handler, "BindOutgoing");
 	if(n){
 		char *ip_str;
@@ -730,10 +731,9 @@ int ReadCfgFile(char * cfg_file)
 
 			/* migrate data from deprecated "Compressible" array to new one */
 			for (i = 0; i < n; i++) {
-                size_t sizeof_full_content_type = strlen (Compressible [i]) + 12 + 1;
-				char full_content_type [sizeof_full_content_type];
+				char full_content_type [strlen (Compressible [i]) + 12 + 1];
 
-				snprintf (full_content_type, sizeof_full_content_type, "application/%s", Compressible [i]);
+				sprintf (full_content_type, "application/%s", Compressible [i]);
 				ct_insert (tmp_lossless_compress_ct, full_content_type);
 			}
 

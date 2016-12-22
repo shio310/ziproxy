@@ -5,7 +5,7 @@
  * This code is under the following conditions:
  *
  * ---------------------------------------------------------------------
- * Copyright (c)2005-2012 Daniel Mealha Cabrita
+ * Copyright (c)2005-2014 Daniel Mealha Cabrita
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -145,7 +145,6 @@ int ziproxy (const char *client_addr, struct sockaddr_in *socket_host, SOCKET so
 	/* at this point, we've got both HTTP method and URL */
 	access_log_define_method (hdrs->method);
 	access_log_define_url (hdrs->url);
-	access_log_define_custom_log_header (hdrs->custom_log_header);
 
 	/* catch signals indicating crash,
 	   but only after this point since:

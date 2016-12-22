@@ -5,7 +5,7 @@
  * This code is under the following conditions:
  *
  * ---------------------------------------------------------------------
- * Copyright (c)2005-2012 Daniel Mealha Cabrita
+ * Copyright (c)2005-2014 Daniel Mealha Cabrita
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -83,7 +83,7 @@ typedef struct {
 	// It may be 200, 404 etc
 	int status;
 
-	char *method, *url, *proto, *host, *path, *content_encoding, *content_type, *user_agent, *x_ziproxy_flags, *custom_log_header;
+	char *method, *url, *proto, *host, *path, *content_encoding, *content_type, *user_agent, *x_ziproxy_flags;
 	int flags, content_encoding_flags;
 	t_content_type type;
 	ZP_DATASIZE_TYPE content_length;

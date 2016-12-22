@@ -5,7 +5,7 @@
  * This code is under the following conditions:
  *
  * ---------------------------------------------------------------------
- * Copyright (c)2005-2012 Daniel Mealha Cabrita
+ * Copyright (c)2005-2014 Daniel Mealha Cabrita
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,9 +84,9 @@ char *ct_aux_rebuild_contenttype (const char *in_cttype, const char *in_ctsubtyp
 		return (NULL);
 
 	if (in_ctsubtype_len != 0)
-	        snprintf (newstr, buflen, "%s/%s", in_cttype, in_ctsubtype);
+	        sprintf (newstr, "%s/%s", in_cttype, in_ctsubtype);
 	else
-		snprintf (newstr, buflen, "%s", in_cttype);
+		sprintf (newstr, "%s", in_cttype);
 
         return (newstr);
 }
@@ -162,9 +162,8 @@ void ct_insert (t_ct_cttable *ct_cttable, const char *ctcontenttype_in)
 
 	/* if content-type is "aaaa", adds "aaaa / *" too */
 	if (*local_subtype == '\0') {
-        size_t sizeof_temp_str = strlen (local_contenttype) + 3;
-		if ((temp_str = calloc (sizeof_temp_str, sizeof (char))) != NULL) {
-			snprintf (temp_str, sizeof_temp_str, "%s/*", local_cttype);
+		if ((temp_str = calloc (strlen (local_contenttype) + 3, sizeof (char))) != NULL) {
+			sprintf (temp_str, "%s/*", local_cttype);
 			st_insert (ct_cttable->cttype, local_cttype);
 			st_insert (ct_cttable->ctcontenttype, temp_str);
 			free (temp_str);
@@ -174,9 +173,8 @@ void ct_insert (t_ct_cttable *ct_cttable, const char *ctcontenttype_in)
 	/* adds "x-" preffix to subtype if requested (during ct_create()) AND there is a subtype specified */
 	if ((ct_cttable->subtype_add_x_prefix) && (*local_subtype != '\0')) {
 		if (strncmp ("x-", local_subtype, 2) && (strlen (local_subtype) > 0)) {
-            size_t sizeof_local_subtype_x = strlen (local_subtype) + 3;
-			if ((local_subtype_x = calloc (sizeof_local_subtype_x, sizeof (char))) != NULL) {
-				snprintf (local_subtype_x, sizeof_local_subtype_x, "x-%s", local_subtype);
+			if ((local_subtype_x = calloc (strlen (local_subtype) + 3, sizeof (char))) != NULL) {
+				sprintf (local_subtype_x, "x-%s", local_subtype);
 				local_contenttype_x = ct_aux_rebuild_contenttype (local_cttype, local_subtype_x);
 
 				st_insert (ct_cttable->cttype, local_cttype);

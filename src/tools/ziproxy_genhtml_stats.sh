@@ -102,7 +102,7 @@ html_start ()
 	printf '</table>'
 	#
 	printf '<font size=1>\n'
-	printf 'Copyright (c)2005-2012 Daniel Mealha Cabrita<br>\n'
+	printf 'Copyright (c)2005-2014 Daniel Mealha Cabrita<br>\n'
 	printf 'Licensed under the GNU GPL v2 or later version<br>\n'
 	printf '</font>'
 
@@ -429,7 +429,7 @@ generate_page ()
 }
 
 if [ "$1" = "-h" ]; then
-	printf "Ziproxy HTML stats generator 1.0.2\nCopyright (c)2006-2012 Daniel Mealha Cabrita\nLicensed under GNU GPL license. See documentation for details.\n\n"
+	printf "Ziproxy HTML stats generator 1.0.2\nCopyright (c)2006-2014 Daniel Mealha Cabrita\nLicensed under GNU GPL license. See documentation for details.\n\n"
 	printf "Usage: ziproxy_genhtml_stats.sh <log_filename> [page_title]\n\n"
 	exit 0
 fi

@@ -1,7 +1,7 @@
 README for Ziproxy
 
 Ziproxy - the HTTP acceleration proxy
-Copyright (c)2005-2012 Daniel Mealha Cabrita
+Copyright (c)2005-2014 Daniel Mealha Cabrita
 For licensing terms and additional copyrights that may apply,
 please read the "CREDITS" and "COPYING" files.
 
@@ -261,6 +261,20 @@ Images between 5000 and 50000 pixels will be converted to JPEG
 with quality of 20. Images between 50000 and 250000 pixels will be 
 converted to JPEG with quality of 25. Images larger than
 250000 pixels will be converted to JPEG with quality of 15.
+
+  AlphaRemovalMinAvgOpacity = <0-1000000>
+  Alpha channel (image transparency data) removal threshold.
+  Removes alpha channel from images with a minimum opacity
+  of AlphaRemovalMinAvgOpacity
+  (1000000: completely opaque, 0: completely transparent).
+  This reduces data by removing unnecessary alpha channel from
+  fully-opaque images; and from (subjectively) not-so-relevant transparency
+  information.
+  This also allows recompression to JPEG for PNG/JP2k images originally
+  with alpha channel (which is not supported by JPEG image format).
+  Note: Debug log reports the average alpha opacity for each
+        image with alpha channel.
+  Default: 1000000 (remove alpha only from fully-opaque images)
 
   JP2Rate
   This option is obsolete.

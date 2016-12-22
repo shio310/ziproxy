@@ -5,7 +5,7 @@
  * This code is under the following conditions:
  *
  * ---------------------------------------------------------------------
- * Copyright (c)2006-2012 Daniel Mealha Cabrita
+ * Copyright (c)2006-2014 Daniel Mealha Cabrita
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -553,7 +553,7 @@ void process_command_line_arguments (t_goptions *goptions, int argc, char **argv
 				break;
 			case 'h':
 				fprintf (stderr, "Ziproxy Log Tool 1.1\n"
-						"Copyright (c)2006-2012 Daniel Mealha Cabrita\n"
+						"Copyright (c)2006-2014 Daniel Mealha Cabrita\n"
 						"Licensed under GNU GPL v2 or later version. See documentation for details.\n\n"
 						"Usage: ziproxylogtool <-m <mode>> [-i <filename>] [-o <filename>] [-h] ... [other options]\n\n"
 						"GENERAL OPTIONS\n\n"
